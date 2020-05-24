@@ -1,0 +1,44 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: stress-svc
+  namespace: stress
+  selfLink: /api/v1/namespaces/stress/services/stress-svc
+  uid: b3e860af-c80d-4ef5-80eb-e3e204be7580
+  resourceVersion: '2465670'
+  creationTimestamp: '2020-05-22T18:13:27Z'
+  labels:
+    app: stress-svc
+    app.kubernetes.io/component: stress-svc
+    app.kubernetes.io/instance: stress-svc
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: basic-stress-test-git-app
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: '11'
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: 'https://github.com/glroland/basic_stress_test.git'
+    openshift.io/generated-by: OpenShiftWebConsole
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+    - name: 8778-tcp
+      protocol: TCP
+      port: 8778
+      targetPort: 8778
+  selector:
+    app: stress-svc
+    deploymentconfig: stress-svc
+  clusterIP: 172.30.240.249
+  type: ClusterIP
+  sessionAffinity: None
+status:
+  loadBalancer: {}
+

@@ -1,0 +1,107 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: 'https://github.com/glroland/basic_stress_test.git'
+    openshift.io/generated-by: OpenShiftWebConsole
+  selfLink: /apis/apps.openshift.io/v1/namespaces/stress/deploymentconfigs/stress-svc
+  resourceVersion: '2459604'
+  name: stress-svc
+  uid: f65119b3-aec0-4285-95f2-f96da2fd2e9d
+  creationTimestamp: '2020-05-22T18:13:27Z'
+  generation: 9
+  namespace: stress
+  labels:
+    app: stress-svc
+    app.kubernetes.io/component: stress-svc
+    app.kubernetes.io/instance: stress-svc
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: basic-stress-test-git-app
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: '11'
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - stress-svc
+        from:
+          kind: ImageStreamTag
+          namespace: stress
+          name: 'stress-svc:latest'
+        lastTriggeredImage: >-
+          image-registry.openshift-image-registry.svc:5000/stress/stress-svc@sha256:5af46089ec74ff46e6fb182b154ded0af83df0a80be5dc75cba3e34ac2efc0c4
+    - type: ConfigChange
+  replicas: 3
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: stress-svc
+    deploymentconfig: stress-svc
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: stress-svc
+        deploymentconfig: stress-svc
+    spec:
+      containers:
+        - name: stress-svc
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/stress/stress-svc@sha256:5af46089ec74ff46e6fb182b154ded0af83df0a80be5dc75cba3e34ac2efc0c4
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+            - containerPort: 8778
+              protocol: TCP
+          env:
+            - name: STRESS_URL
+              value: 'http://172.30.240.249:8080/fibo'
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+status:
+  observedGeneration: 9
+  details:
+    message: config change
+    causes:
+      - type: ConfigChange
+  availableReplicas: 3
+  unavailableReplicas: 0
+  latestVersion: 6
+  updatedReplicas: 3
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2020-05-22T18:18:52Z'
+      lastTransitionTime: '2020-05-22T18:18:52Z'
+      message: Deployment config has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2020-05-24T18:58:25Z'
+      lastTransitionTime: '2020-05-24T18:58:22Z'
+      reason: NewReplicationControllerAvailable
+      message: replication controller "stress-svc-6" successfully rolled out
+  replicas: 3
+  readyReplicas: 3
+

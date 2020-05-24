@@ -1,0 +1,39 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: stress-svc
+  namespace: stress
+  selfLink: /apis/route.openshift.io/v1/namespaces/stress/routes/stress-svc
+  uid: 0a1ddd54-2ec1-4d31-b1da-8c85b573fab5
+  resourceVersion: '1598879'
+  creationTimestamp: '2020-05-22T18:13:27Z'
+  labels:
+    app: stress-svc
+    app.kubernetes.io/component: stress-svc
+    app.kubernetes.io/instance: stress-svc
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: basic-stress-test-git-app
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: '11'
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  host: stress-svc-stress.apps.ocp4.home.glroland.com
+  to:
+    kind: Service
+    name: stress-svc
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: stress-svc-stress.apps.ocp4.home.glroland.com
+      routerName: default
+      conditions:
+        - type: Admitted
+          status: 'True'
+          lastTransitionTime: '2020-05-22T18:13:27Z'
+      wildcardPolicy: None
+      routerCanonicalHostname: apps.ocp4.home.glroland.com
+

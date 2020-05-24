@@ -1,0 +1,61 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: stress-svc
+  namespace: stress
+  selfLink: /apis/build.openshift.io/v1/namespaces/stress/buildconfigs/stress-svc
+  uid: 0050c28c-cd6d-46a1-9019-5237ae28fd5c
+  resourceVersion: '1598882'
+  creationTimestamp: '2020-05-22T18:13:27Z'
+  labels:
+    app: stress-svc
+    app.kubernetes.io/component: stress-svc
+    app.kubernetes.io/instance: stress-svc
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: basic-stress-test-git-app
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: '11'
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: 'https://github.com/glroland/basic_stress_test.git'
+    openshift.io/generated-by: OpenShiftWebConsole
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'stress-svc:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'java:11'
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/glroland/basic_stress_test.git'
+    contextDir: /stress-svc
+  triggers:
+    - type: Generic
+      generic:
+        secretReference:
+          name: stress-svc-generic-webhook-secret
+    - type: GitHub
+      github:
+        secretReference:
+          name: stress-svc-github-webhook-secret
+    - type: ImageChange
+      imageChange:
+        lastTriggeredImageID: >-
+          image-registry.openshift-image-registry.svc:5000/openshift/java@sha256:4dc1ae6af9a3efbbd28c1b765faa6fcea3f8eddccd2347ad97713d312f57b511
+    - type: ConfigChange
+  runPolicy: Serial
+status:
+  lastVersion: 1
+
