@@ -1,4 +1,4 @@
-package com.glroland.stresssvc.fibo;
+package com.glroland.stress.fibo;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import java.util.Date;
-import com.glroland.stresssvc.ServiceUtils;
+import com.glroland.stress.ServiceUtils;
 
 @RestController
 public class FiboServiceController {

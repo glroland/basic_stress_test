@@ -1,4 +1,4 @@
-package com.glroland.stresssvc;
+package com.glroland.stress;
 
 public class ServiceUtils {
     

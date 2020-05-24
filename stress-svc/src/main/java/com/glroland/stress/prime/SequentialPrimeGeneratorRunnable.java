@@ -1,9 +1,9 @@
-package com.glroland.stresssvc.prime;
+package com.glroland.stress.prime;
 
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
-import com.glroland.stresssvc.ServiceUtils;
+import com.glroland.stress.ServiceUtils;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SequentialPrimeGeneratorRunnable implements Runnable {

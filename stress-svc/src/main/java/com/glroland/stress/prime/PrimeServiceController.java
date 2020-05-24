@@ -1,4 +1,4 @@
-package com.glroland.stresssvc.prime;
+package com.glroland.stress.prime;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
