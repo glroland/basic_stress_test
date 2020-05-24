@@ -1,4 +1,4 @@
-package com.glroland.stresssvc;
+package com.glroland.stresssvc.fibo;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,14 +11,10 @@ import java.io.PrintWriter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import java.util.Date;
+import com.glroland.stresssvc.ServiceUtils;
 
 @RestController
-public class StressServiceController {
-
-    @RequestMapping("/")
-    public String index() {
-        return "Stress Me Out!";
-    }
+public class FiboServiceController {
 
     @CrossOrigin(origins = "*")
     @RequestMapping("/fibo")
@@ -76,12 +72,7 @@ public class StressServiceController {
     @RequestMapping("/fiboStress")
     public void fiboStress(@RequestParam(value="threads") int threads, @RequestParam(value="loops") int loops)
     {
-        String stressUrl = System.getenv("STRESS_URL");
-        if ((stressUrl == null) || (stressUrl.length() == 0))
-        {
-            stressUrl = "http://localhost:8080/fibo";
-        }
-        final String stressUrlFinal = stressUrl;
+        final String stressUrlFinal = ServiceUtils.getServiceUrl() + "/fibo";
 
         for (int t = 0; t < threads; t++)
         {
