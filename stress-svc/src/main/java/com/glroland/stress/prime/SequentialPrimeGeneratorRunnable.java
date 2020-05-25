@@ -80,6 +80,7 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
                 if (!response.getStatusCode().is2xxSuccessful())
                 {
                     String msg = "Unable to invoke service due to HTTP Error: " + response.getStatusCodeValue();
+                    System.out.println(msg);
                     error = msg;
                     return;
                 }
@@ -92,7 +93,8 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
                     {
                         String msg = "Too many host IPs in header.  Not sure how this could happen.  " + hostIpList.toString();
                         System.out.println(msg);
-                        throw new RuntimeException(msg);
+                        error = msg;
+                        return;
                     }
                     
                     String hostIp = hostIpList.get(0);
@@ -113,6 +115,7 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
         {
             String msg = "An error occurred during processing - " + e.toString();
             System.out.println(msg);
+            error = msg;
             throw e;
         }
     }
