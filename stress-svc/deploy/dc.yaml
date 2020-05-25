@@ -70,7 +70,7 @@ spec:
               protocol: TCP
           env:
             - name: STRESS_URL
-              value: 'http://172.30.240.249:8080/fibo'
+              value: 'http://stress-svc:8080'
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
