@@ -9,3 +9,5 @@ oc create -f imagestream.yaml
 oc create -f build.yaml
 oc create -f dc.yaml
 oc create -f route.yaml
+
+http://stress-svc-stress.<cluster_domain>/prime/
