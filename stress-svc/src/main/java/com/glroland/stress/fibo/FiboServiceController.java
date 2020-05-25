@@ -14,24 +14,25 @@ import java.util.Date;
 import com.glroland.stress.ServiceUtils;
 
 @RestController
+@RequestMapping(path = "/fibo")
 public class FiboServiceController {
 
     @CrossOrigin(origins = "*")
-    @RequestMapping("/fibo")
+    @RequestMapping("/")
     public ResponseEntity<StreamingResponseBody> fibo()
     {
         return this.fiboResume("", 0, 1, Long.MAX_VALUE / 2);
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping("/fiboLimit")
+    @RequestMapping("/limit")
     public ResponseEntity<StreamingResponseBody> fiboLimit(@RequestParam(value="limit") long limit)
     {
         return this.fiboResume("", 0, 1, limit);
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping("/fiboResume")
+    @RequestMapping("/resume")
     public ResponseEntity<StreamingResponseBody> fiboResume(@RequestParam(value="pastSequenceNotIncludingN0andN1") String pastSequenceNotIncludingN0andN1, @RequestParam(value="n0") long n0, @RequestParam(value="n1") long n1, @RequestParam(value="limit") long limit)
     {
         System.out.println("Invocation - " + (new Date()).getTime());
@@ -69,10 +70,10 @@ public class FiboServiceController {
     }
 
     @CrossOrigin(origins = "*")
-    @RequestMapping("/fiboStress")
+    @RequestMapping("/stress")
     public void fiboStress(@RequestParam(value="threads") int threads, @RequestParam(value="loops") int loops)
     {
-        final String stressUrlFinal = ServiceUtils.getServiceUrl() + "/fibo";
+        final String stressUrlFinal = ServiceUtils.getServiceUrl() + "/fibo/";
 
         for (int t = 0; t < threads; t++)
         {

@@ -3,13 +3,21 @@ package com.glroland.stress.prime;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
 import com.glroland.stress.ServiceUtils;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 
 public class SequentialPrimeGeneratorRunnable implements Runnable {
     private final AtomicBoolean runningFlag = new AtomicBoolean(false);
     private Thread thread = null;
     private StringBuilder results = null;
+    private HashMap<String,Long> hosts = null;
 
     public void start()
     {
@@ -30,14 +38,20 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
         return results.toString();
     }
 
+    public Map<String,Long> getHosts()
+    {
+        return hosts;
+    }
+
     public void run()
     {
         runningFlag.set(true);
 
-        final String stressUrlFinal = ServiceUtils.getServiceUrl() + "/primeNext";
+        final String stressUrlFinal = ServiceUtils.getServiceUrl() + "/prime/next";
 
         long startPrime = 0;
         results = new StringBuilder();
+        hosts = new HashMap<String,Long>();
         results.append(startPrime).append(",");
 
         while(true)
@@ -51,7 +65,30 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
             UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(stressUrlFinal)
                 .queryParam("startPrime", startPrime);
 
-            long nextPrime = template.getForObject(urlBuilder.toUriString(), Long.class);
+           // long nextPrime = template.getForObject(urlBuilder.toUriString(), Long.class);
+
+
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity request = new HttpEntity(headers);
+            ResponseEntity<Long> response = template.exchange(urlBuilder.toUriString(), HttpMethod.GET, request, Long.class);
+            long nextPrime = response.getBody();
+
+            List<String> hostIpList = response.getHeaders().get(ServiceUtils.HEADER_HOST_IP);
+            if ((hostIpList != null) && (hostIpList.size() > 0))
+            {
+                if (hostIpList.size() > 1)
+                    throw new RuntimeException("Too many host IPs in header.  Not sure how this could happen");
+                
+                String hostIp = hostIpList.get(0);
+                
+                Long count = hosts.get(hostIp);
+                if (count == null)
+                    count = (long)1;
+                else 
+                    count = count + 1;
+                hosts.put(hostIp, count);
+            }
+
             results.append(nextPrime).append(",");
             startPrime = nextPrime;
         }
