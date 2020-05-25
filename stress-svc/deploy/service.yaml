@@ -2,11 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: stress-svc
-  namespace: stress
-  selfLink: /api/v1/namespaces/stress/services/stress-svc
-  uid: b3e860af-c80d-4ef5-80eb-e3e204be7580
-  resourceVersion: '2465670'
-  creationTimestamp: '2020-05-22T18:13:27Z'
   labels:
     app: stress-svc
     app.kubernetes.io/component: stress-svc
@@ -18,7 +13,6 @@ metadata:
   annotations:
     app.openshift.io/vcs-ref: master
     app.openshift.io/vcs-uri: 'https://github.com/glroland/basic_stress_test.git'
-    openshift.io/generated-by: OpenShiftWebConsole
 spec:
   ports:
     - name: 8080-tcp
@@ -36,9 +30,7 @@ spec:
   selector:
     app: stress-svc
     deploymentconfig: stress-svc
-  clusterIP: 172.30.240.249
   type: ClusterIP
   sessionAffinity: None
 status:
   loadBalancer: {}
-
