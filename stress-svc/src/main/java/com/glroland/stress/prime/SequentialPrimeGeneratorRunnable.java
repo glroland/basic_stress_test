@@ -18,7 +18,7 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
     private Thread thread = null;
     private StringBuilder results = null;
     private HashMap<String,Long> hosts = null;
-    private Throwable error = null;
+    private String error = null;
 
     public void start()
     {
@@ -44,7 +44,7 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
         return hosts;
     }
 
-    public Throwable getError()
+    public String getError()
     {
         return error;
     }
@@ -63,30 +63,37 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
             hosts = new HashMap<String,Long>();
             results.append(startPrime).append(",");
 
+            RestTemplateBuilder builder = new RestTemplateBuilder();
+            RestTemplate template = builder.build();
+
             while(true)
             {
                 if (!runningFlag.get())
                     break;
 
-                RestTemplateBuilder builder = new RestTemplateBuilder();
-                RestTemplate template = builder.build();
-
                 UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(stressUrlFinal)
                     .queryParam("startPrime", startPrime);
 
-            // long nextPrime = template.getForObject(urlBuilder.toUriString(), Long.class);
-
-
                 HttpHeaders headers = new HttpHeaders();
-                HttpEntity request = new HttpEntity(headers);
+                HttpEntity<String> request = new HttpEntity<String>(headers);
                 ResponseEntity<Long> response = template.exchange(urlBuilder.toUriString(), HttpMethod.GET, request, Long.class);
+                if (!response.getStatusCode().is2xxSuccessful())
+                {
+                    String msg = "Unable to invoke service due to HTTP Error: " + response.getStatusCodeValue();
+                    error = msg;
+                    return;
+                }
                 long nextPrime = response.getBody();
 
                 List<String> hostIpList = response.getHeaders().get(ServiceUtils.HEADER_HOST_IP);
                 if ((hostIpList != null) && (hostIpList.size() > 0))
                 {
                     if (hostIpList.size() > 1)
-                        throw new RuntimeException("Too many host IPs in header.  Not sure how this could happen");
+                    {
+                        String msg = "Too many host IPs in header.  Not sure how this could happen.  " + hostIpList.toString();
+                        System.out.println(msg);
+                        throw new RuntimeException(msg);
+                    }
                     
                     String hostIp = hostIpList.get(0);
                     
@@ -104,8 +111,8 @@ public class SequentialPrimeGeneratorRunnable implements Runnable {
         }
         catch(Throwable e)
         {
-            error = e;
-            System.out.println("An error occurred during processing - " + e.toString());
+            String msg = "An error occurred during processing - " + e.toString();
+            System.out.println(msg);
             throw e;
         }
     }
