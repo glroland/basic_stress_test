@@ -24,6 +24,10 @@ public class PrimeServiceController {
         {
             Thread.sleep(ServiceUtils.getTimeLimitSeconds() * 1000);
             r.stop();
+            if (r.getError() != null)
+            {
+                return "An error occurred during prime number calculation!  " + r.getError().toString();
+            }
 
             results.append(r.getResults()).append("\n");
         }
